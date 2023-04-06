@@ -1,23 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import React, { useState, useEffect } from "react";
 
 function App() {
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      const response = await fetch("https://api.quotable.io/quotes/random");
+      const data = await response.json();
+      setData(data[0]);
+      console.log(data);
+    }
+    fetchData();
+  }, []);
+
+  function handleRefresh() {
+    window.location.reload();
+  }
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {data && (
+        <div className="center">
+          <div className="quote">
+            <h1>{data?.content}</h1>
+            <h2>{data?.author}</h2>
+          </div>
+          <button onClick={handleRefresh}>Refresh</button>
+        </div>
+      )}
     </div>
   );
 }
